@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Pips Network</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0e0e0e;
+      color: #f5f5f5;
+      padding: 2rem;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .section {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: #1e1e1e;
+      padding: 1.5rem;
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    input, select, button, textarea {
+      padding: 0.5rem;
+      margin: 0.25rem;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #2e2e2e;
+      color: #fff;
+    }
+    textarea {
+      width: calc(100% - 1rem);
+      height: 60px;
+    }
+    button {
+      cursor: pointer;
+      background-color: #0088ff;
+      border: none;
+    }
+    button:hover {
+      background-color: #0066cc;
+    }
+    .checkboxes label {
+      display: block;
+      margin: 5px 0;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .tab-buttons {
+      display: flex;
+      margin-bottom: 1rem;
+    }
+    .tab-button {
+      padding: 0.5rem 1rem;
+      background: #2e2e2e;
+      border: none;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    .tab-button.active {
+      background: #0088ff;
+    }
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      background: #2e2e2e;
+      border-radius: 8px;
+    }
+    .split-exit-details {
+      margin-top: 10px;
+      padding: 10px;
+      background: #2e2e2e;
+      border-radius: 8px;
+    }
+    .journal-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .journal-form div {
+      margin-bottom: 10px;
+    }
+    .wide-field {
+      grid-column: span 2;
+    }
+  </style>
+</head>
+<body>
+  <h1>📈 Advanced Trading Journal</h1>
+
+  <div class="section">
+    <h2>Trade Journal</h2>
+    <div class="tab-buttons">
+      <button class="tab-button active" onclick="openTab('journal')">Journal Entry</button>
+      <button class="tab-button" onclick="openTab('history')">Trade History</button>
+    </div>
+    
+    <div id="journal" class="tab-content active">
+      <div class="journal-form">
+        <div>
+          <label>Date/Time</label>
+          <input type="datetime-local" id="trade-datetime" />
+        </div>
+        <div>
+          <label>Pair</label>
+          <select id="pair">
+            <option value="US30">US30</option>
+            <option value="NAS100">NAS100</option>
+            <option value="SP500">SP500</option>
+          </select>
+        </div>
+        
+        <div class="wide-field">
+          <label>HTF Bias</label>
+          <select id="htf-bias">
+            <option value="🟢Bullish">🟢Bullish</option>
+            <option value="🔴Bearish">🔴Bearish</option>
+          </select>
+        </div>
+        
+        <div>
+          <label>LTF Structure</label>
+          <select id="ltf-structure">
+            <option value="BOS">BOS</option>
+            <option value="CHoCH">CHoCH</option>
+          </select>
+        </div>
+        
+        <div>
+          <label>Entry Trigger</label>
+          <input type="text" id="entry-trigger" placeholder="e.g. FVG retest + BOS" />
+        </div>
+        
+        <div>
+          <label>Entry Price</label>
+          <input type="number" id="entry-price" step="0.0001" />
+        </div>
+        
+        <div>
+          <label>Stop Loss</label>
+          <input type="number" id="stop-loss" step="0.0001" />
+        </div>
+        
+        <div>
+          <label>Take Profit</label>
+          <input type="number" id="take-profit" step="0.0001" />
+        </div>
+        
+        <div>
+          <label>Lots Entered</label>
+          <input type="number" id="lot-size" step="0.01" value="1.00" />
+        </div>
+        
+        <div class="split-exit-details">
+          <h4>1st TP Exit (Half Lots)</h4>
+          <input type="number" id="exit1-price" placeholder="Exit Price" step="0.0001" />
+          <input type="number" id="exit1-lot" placeholder="Lot Size" step="0.01" value="0.50" />
+        </div>
+        
+        <div class="split-exit-details">
+          <h4>2nd TP Exit (Half Lots)</h4>
+          <input type="number" id="exit2-price" placeholder="Exit Price" step="0.0001" />
+          <input type="number" id="exit2-lot" placeholder="Lot Size" step="0.01" value="0.50" />
+        </div>
+        
+        <div>
+          <label>Risk-Reward (RR)</label>
+          <input type="text" id="risk-reward" />
+        </div>
+        
+        <div>
+          <label>Targeted</label>
+          <select id="target">
+            <option value="EQH">EQH</option>
+            <option value="EQL">EQL</option>
+            <option value="FVG">FVG</option>
+          </select>
+        </div>
+        
+        <div>
+          <label>Result</label>
+          <select id="result">
+            <option value="✅ Win">✅ Win</option>
+            <option value="❌ Loss">❌ Loss</option>
+            <option value="🟡 Break Even">🟡 Break Even</option>
+          </select>
+        </div>
+        
+        <div class="wide-field">
+          <label>Notes</label>
+          <textarea id="notes" placeholder="1-2 line insight or mistake"></textarea>
+        </div>
+        
+        <div class="wide-field">
+          <h3>✅ Setup Checklist 
+            <button onclick="toggleAllCheckboxes()" style="font-size:12px; padding:2px 5px;">Select/Deselect All</button>
+          </h3>
+          <div class="checkboxes">
+            <label><input type="checkbox" class="setup-check" /> HTF Trend Confirmed</label>
+            <label><input type="checkbox" class="setup-check" /> CHoCH/BOS in line with HTF</label>
+            <label><input type="checkbox" class="setup-check" /> Liquidity Zone identified & swept</label>
+            <label><input type="checkbox" class="setup-check" /> FVG formed on LTF</label>
+            <label><input type="checkbox" class="setup-check" /> Retest of FVG completed</label>
+            <label><input type="checkbox" class="setup-check" /> News / Event check</label>
+            <label><input type="checkbox" class="setup-check" /> Clean entry signal</label>
+            <label><input type="checkbox" class="setup-check" /> Target: HTF FVG / EQH / EQL</label>
+          </div>
+        </div>
+        
+        <div class="wide-field">
+          <button onclick="addTrade()">Add Trade</button>
+          <button onclick="calculatePL()">Calculate P/L</button>
+          <span id="pl-result" style="margin-left: 20px;"></span>
+        </div>
+      </div>
+    </div>
+    
+    <div id="history" class="tab-content">
+      <table id="tradeTable">
+        <thead>
+          <tr>
+            <th>Date/Time</th>
+            <th>Pair</th>
+            <th>Bias</th>
+            <th>Entry</th>
+            <th>Exits</th>
+            <th>Lots</th>
+            <th>P/L</th>
+            <th>Result</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      
+      <div class="summary">
+        <h3>Profit/Loss Summary</h3>
+        <p>Total Profit: $<span id="total-profit">0.00</span></p>
+        <p>Total Loss: $<span id="total-loss">0.00</span></p>
+        <p>Net P/L: $<span id="net-pl">0.00</span></p>
+        <button onclick="exportToGoogleSheets()">Save to Google Sheets</button>
+        <button onclick="exportToExcel()">Export to Excel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Set current date/time when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      const now = new Date();
+      const timezoneOffset = now.getTimezoneOffset() * 60000;
+      const localISOTime = new Date(now - timezoneOffset).toISOString().slice(0, 16);
+      document.getElementById('trade-datetime').value = localISOTime;
+      loadFromGoogleSheets();
+    });
+
+    function openTab(tabName) {
+      const tabContents = document.getElementsByClassName('tab-content');
+      for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove('active');
+      }
+      
+      const tabButtons = document.getElementsByClassName('tab-button');
+      for (let i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove('active');
+      }
+      
+      document.getElementById(tabName).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function toggleAllCheckboxes() {
+      const checkboxes = document.querySelectorAll('.setup-check');
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+      
+      checkboxes.forEach(cb => {
+        cb.checked = !allChecked;
+      });
+    }
+
+    function calculatePL() {
+      const entry = parseFloat(document.getElementById('entry-price').value);
+      const exit1 = parseFloat(document.getElementById('exit1-price').value);
+      const exit2 = parseFloat(document.getElementById('exit2-price').value);
+      const lot1 = parseFloat(document.getElementById('exit1-lot').value);
+      const lot2 = parseFloat(document.getElementById('exit2-lot').value);
+      
+      if (isNaN(entry) || isNaN(exit1) || isNaN(lot1)) {
+        alert('Please enter valid entry and exit prices');
+        return;
+      }
+      
+      const points1 = (exit1 - entry).toFixed(1);
+      let pl = points1 * lot1;
+      
+      if (!isNaN(exit2)) {
+        const points2 = (exit2 - entry).toFixed(1);
+        pl += points2 * lot2;
+      }
+      
+      document.getElementById('pl-result').textContent = `Profit/Loss: $${pl.toFixed(2)}`;
+    }
+
+    function addTrade() {
+      const datetime = document.getElementById('trade-datetime').value;
+      const pair = document.getElementById('pair').value;
+      const htfBias = document.getElementById('htf-bias').value;
+      const ltfStructure = document.getElementById('ltf-structure').value;
+      const entryTrigger = document.getElementById('entry-trigger').value;
+      const entry = parseFloat(document.getElementById('entry-price').value);
+      const stopLoss = parseFloat(document.getElementById('stop-loss').value);
+      const takeProfit = parseFloat(document.getElementById('take-profit').value);
+      const lotSize = parseFloat(document.getElementById('lot-size').value);
+      const exit1 = parseFloat(document.getElementById('exit1-price').value);
+      const exit1Lot = parseFloat(document.getElementById('exit1-lot').value);
+      const exit2 = parseFloat(document.getElementById('exit2-price').value);
+      const exit2Lot = parseFloat(document.getElementById('exit2-lot').value);
+      const riskReward = document.getElementById('risk-reward').value;
+      const target = document.getElementById('target').value;
+      const result = document.getElementById('result').value;
+      const notes = document.getElementById('notes').value;
+      
+      const checklist = Array.from(document.querySelectorAll('.setup-check'))
+        .map(cb => cb.checked ? '✔️' : '❌')
+        .join('<br>');
+      
+      // Calculate P/L
+      let pl = 0;
+      let exitDisplay = '';
+      
+      if (!isNaN(exit1)) {
+        const points1 = (exit1 - entry).toFixed(1);
+        pl += points1 * exit1Lot;
+        exitDisplay += `${exit1} (${exit1Lot} lot)`;
+      }
+      
+      if (!isNaN(exit2)) {
+        const points2 = (exit2 - entry).toFixed(1);
+        pl += points2 * exit2Lot;
+        exitDisplay += exitDisplay ? ` + ${exit2} (${exit2Lot} lot)` : `${exit2} (${exit2Lot} lot)`;
+      }
+      
+      const table = document.getElementById('tradeTable').getElementsByTagName('tbody')[0];
+      const row = table.insertRow();
+      
+      row.innerHTML = `
+        <td>${datetime}</td>
+        <td>${pair}</td>
+        <td>${htfBias}</td>
+        <td>${entry}</td>
+        <td>${exitDisplay || 'N/A'}</td>
+        <td>${lotSize}</td>
+        <td class="pl-value">$${pl.toFixed(2)}</td>
+        <td>${result}</td>
+        <td><button onclick="deleteRow(this)">Delete</button></td>
+      `;
+      
+      updateSummary();
+      saveToGoogleSheets();
+      clearForm();
+    }
+
+    function clearForm() {
+      document.getElementById('entry-trigger').value = '';
+      document.getElementById('entry-price').value = '';
+      document.getElementById('stop-loss').value = '';
+      document.getElementById('take-profit').value = '';
+      document.getElementById('exit1-price').value = '';
+      document.getElementById('exit2-price').value = '';
+      document.getElementById('risk-reward').value = '';
+      document.getElementById('notes').value = '';
+      document.getElementById('pl-result').textContent = '';
+      
+      const checkboxes = document.querySelectorAll('.setup-check');
+      checkboxes.forEach(cb => cb.checked = false);
+    }
+
+    function deleteRow(btn) {
+      const row = btn.parentElement.parentElement;
+      row.remove();
+      updateSummary();
+      saveToGoogleSheets();
+    }
+
+    function updateSummary() {
+      const plCells = document.querySelectorAll('.pl-value');
+      let totalProfit = 0;
+      let totalLoss = 0;
+
+      plCells.forEach(cell => {
+        const text = cell.textContent;
+        if (text.startsWith('$')) {
+          const value = parseFloat(text.substring(1));
+          if (value > 0) {
+            totalProfit += value;
+          } else {
+            totalLoss += Math.abs(value);
+          }
+        }
+      });
+
+      const netPl = totalProfit - totalLoss;
+
+      document.getElementById('total-profit').textContent = totalProfit.toFixed(2);
+      document.getElementById('total-loss').textContent = totalLoss.toFixed(2);
+      document.getElementById('net-pl').textContent = netPl.toFixed(2);
+    }
+
+    // Google Sheets integration
+    const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL'; // Replace with your Google Apps Script URL
+    let tradesData = [];
+
+    function saveToGoogleSheets() {
+      tradesData = [];
+      const rows = document.querySelectorAll('#tradeTable tbody tr');
+      
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        tradesData.push({
+          datetime: cells[0].textContent,
+          pair: cells[1].textContent,
+          bias: cells[2].textContent,
+          entry: cells[3].textContent,
+          exits: cells[4].textContent,
+          lotSize: cells[5].textContent,
+          pl: cells[6].textContent,
+          result: cells[7].textContent
+        });
+      });
+      
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(tradesData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => console.log('Saved to Google Sheets'))
+      .catch(error => console.error('Error:', error));
+    }
+
+    function loadFromGoogleSheets() {
+      fetch(scriptURL)
+        .then(response => response.json())
+        .then(data => {
+          tradesData = data;
+          const table = document.getElementById('tradeTable').getElementsByTagName('tbody')[0];
+          table.innerHTML = '';
+          
+          data.forEach(trade => {
+            const row = table.insertRow();
+            row.innerHTML = `
+              <td>${trade.datetime}</td>
+              <td>${trade.pair}</td>
+              <td>${trade.bias}</td>
+              <td>${trade.entry}</td>
+              <td>${trade.exits}</td>
+              <td>${trade.lotSize}</td>
+              <td class="pl-value">${trade.pl}</td>
+              <td>${trade.result}</td>
+              <td><button onclick="deleteRow(this)">Delete</button></td>
+            `;
+          });
+          
+          updateSummary();
+        })
+        .catch(error => console.error('Error loading data:', error));
+    }
+
+    function exportToGoogleSheets() {
+      saveToGoogleSheets();
+      alert('Data saved to Google Sheets');
+    }
+
+    function exportToExcel() {
+      let csv = 'Date/Time,Pair,HTF Bias,Entry,Exits,Lot Size,P/L,Result\n';
+      
+      const rows = document.querySelectorAll('#tradeTable tbody tr');
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        csv += `"${cells[0].textContent}","${cells[1].textContent}","${cells[2].textContent}",`;
+        csv += `"${cells[3].textContent}","${cells[4].textContent}","${cells[5].textContent}",`;
+        csv += `"${cells[6].textContent}","${cells[7].textContent}"\n`;
+      });
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'trading_journal.csv');
+      link.style.visibility = 'hidden';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
